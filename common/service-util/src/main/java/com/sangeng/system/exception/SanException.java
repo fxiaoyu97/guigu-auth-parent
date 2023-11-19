@@ -2,7 +2,6 @@ package com.sangeng.system.exception;
 
 import com.sangeng.common.result.ResultCodeEnum;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
  * @create: 2023-11-18 16:48
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class SanException extends RuntimeException {
 

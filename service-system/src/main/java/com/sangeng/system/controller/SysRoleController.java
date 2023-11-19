@@ -1,18 +1,22 @@
 package com.sangeng.system.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sangeng.common.result.Result;
 import com.sangeng.model.system.SysRole;
+import com.sangeng.model.vo.AssginRoleVo;
 import com.sangeng.model.vo.SysRoleQueryVo;
 import com.sangeng.system.service.SysRoleService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author: calos
@@ -25,16 +29,15 @@ public class SysRoleController {
 
     @Autowired
     private SysRoleService sysRoleService;
+
     @ApiOperation(value = "获取分页列表")
     @GetMapping("/{page}/{limit}")
-    public Result findPageQueryRole( @ApiParam(name = "page", value = "当前页码", required = true)
-    @PathVariable Long page,
-        @ApiParam(name = "limit", value = "每页记录数", required = true)
-        @PathVariable Long limit,
+    public Result findPageQueryRole(@ApiParam(name = "page", value = "当前页码", required = true) @PathVariable Long page,
+        @ApiParam(name = "limit", value = "每页记录数", required = true) @PathVariable Long limit,
 
-        @ApiParam(name = "roleQueryVo", value = "查询对象", required = false) SysRoleQueryVo roleQueryVo){
-        Page<SysRole> sysRolePage = new Page<>(page,limit);
-        IPage<SysRole> pageModel = sysRoleService.selectPage(sysRolePage,roleQueryVo);
+        @ApiParam(name = "roleQueryVo", value = "查询对象", required = false) SysRoleQueryVo roleQueryVo) {
+        Page<SysRole> sysRolePage = new Page<>(page, limit);
+        IPage<SysRole> pageModel = sysRoleService.selectPage(sysRolePage, roleQueryVo);
         return Result.ok(pageModel);
     }
 
@@ -80,6 +83,20 @@ public class SysRoleController {
     @DeleteMapping("/batchRemove")
     public Result batchRemove(@RequestBody List<Long> idList) {
         sysRoleService.removeByIds(idList);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "根据用户获取角色数据")
+    @GetMapping("/toAssign/{userId}")
+    public Result toAssign(@PathVariable Long userId) {
+        Map<String, Object> roleMap = sysRoleService.getRolesByUserId(userId);
+        return Result.ok(roleMap);
+    }
+
+    @ApiOperation(value = "根据用户分配角色")
+    @PostMapping("/doAssign")
+    public Result doAssign(@RequestBody AssginRoleVo assginRoleVo) {
+        sysRoleService.doAssign(assginRoleVo);
         return Result.ok();
     }
 }
