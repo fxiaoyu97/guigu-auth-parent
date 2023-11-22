@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sangeng.common.result.Result;
 import com.sangeng.model.system.SysMenu;
+import com.sangeng.model.vo.AssignMenuVo;
 import com.sangeng.system.service.SysMenuService;
 
 import io.swagger.annotations.Api;
@@ -23,6 +24,20 @@ public class SysMenuController {
 
     @Autowired
     private SysMenuService sysMenuService;
+
+    @ApiOperation(value = "根据角色获取菜单")
+    @GetMapping("/toAssign/{roleId}")
+    public Result toAssign(@PathVariable Long roleId) {
+        List<SysMenu> list = sysMenuService.findSysMenuByRoleId(roleId);
+        return Result.ok(list);
+    }
+
+    @ApiOperation(value = "给角色分配权限")
+    @PostMapping("/doAssign")
+    public Result doAssign(@RequestBody AssignMenuVo assignMenuVo) {
+        sysMenuService.doAssign(assignMenuVo);
+        return Result.ok();
+    }
 
     @ApiOperation(value = "获取菜单")
     @GetMapping("findNodes")
@@ -48,7 +63,7 @@ public class SysMenuController {
     @ApiOperation(value = "删除菜单")
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id) {
-        sysMenuService.removeById(id);
+        sysMenuService.removeMenuById(id);
         return Result.ok();
     }
 }

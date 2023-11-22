@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sangeng.common.result.Result;
+import com.sangeng.common.utils.MD5;
 import com.sangeng.model.system.SysUser;
 import com.sangeng.model.vo.SysUserQueryVo;
 import com.sangeng.system.service.SysUserService;
@@ -48,6 +49,7 @@ public class SysUserController {
     @ApiOperation(value = "保存用户")
     @PostMapping("/save")
     public Result save(@RequestBody SysUser user) {
+        user.setPassword(MD5.encrypt(user.getPassword()));
         sysUserService.save(user);
         return Result.ok();
     }
